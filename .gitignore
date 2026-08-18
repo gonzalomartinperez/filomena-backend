@@ -1,0 +1,40 @@
+# Dependencias de Composer y Node
+/vendor
+/node_modules/
+
+# Archivos de entorno
+.env
+
+# Archivos generados por Laravel
+/public/storage
+/storage/*.key
+.phpunit.result.cache
+/bootstrap/cache/*.php
+/.pint-result-cache
+public/build/
+
+# Logs
+*.log
+/docker/logs/*
+!/docker/logs/.gitkeep
+
+# Cachés y archivos temporales
+*.tmp
+*.temp
+
+# IDE
+.vscode/
+.editorconfig
+
+# Archivos de Windows
+.DS_Store
+Thumbs.db
+
+# Git
+database/.gitignore
+storage/framework/.gitignore
+
+# frankenphp
+**/caddy
+frankenphp
+frankenphp-worker.php

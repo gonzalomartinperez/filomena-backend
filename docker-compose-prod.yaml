@@ -1,0 +1,176 @@
+services:
+
+  # FrankenPHP + Octane: Contenedor principal de la aplicación.
+  frankenphp:
+    build:
+      context: .
+      dockerfile: ./docker/frankenphp-octane/Dockerfile
+      target: production
+    working_dir: /app
+    restart: unless-stopped
+    tty: false
+    env_file: [.env]
+    environment:
+      APP_ENV: "production"
+      APP_DEBUG: "false"
+      LOG_LEVEL: "info"
+      LOG_DAILY_DAYS: "30"
+      ACTIVITY_LOG_LEVEL: "info"
+      ACTIVITY_LOG_DAYS: "90"
+      LOG_STDERR_LEVEL: "error"
+      LOG_STACK: "stdout_json,daily,activity,stderr"
+      TELESCOPE_ENABLED: "false"
+      PULSE_ENABLED: "true"
+      OCTANE_LOG_LEVEL: "info"
+      OCTANE_EXTRA_FLAGS: ""
+      OPTIMIZE_ON_BOOT: "true"
+      MIGRATE_ON_BOOT: "true"
+    volumes:
+      - storage-production:/app/storage
+      - caddy-data:/data
+      - caddy-config:/config
+      - ./docker/logs:/app/storage/logs
+      - ./storage/app/public:/app/storage/app/public
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    networks: [laravel-production]
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -H 'X-Health-Check: true' http://127.0.0.1:$${APP_PORT:-8000}/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+
+  # MariaDB: Base de datos de la aplicación.
+  mariadb:
+    image: mariadb:lts
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: "${DB_PASSWORD:?Set DB_PASSWORD in .env}"
+      MARIADB_DATABASE: "${DB_DATABASE:-laravel}"
+    ports:
+      - "127.0.0.1:${DB_PORT:-3306}:3306"
+    volumes:
+      - mariadb-data-production:/var/lib/mysql
+    networks: [laravel-production]
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+
+  # Redis: Manejo de caché, sesiones y colas de la aplicación.
+  redis:
+    image: redis:latest
+    restart: unless-stopped
+    networks: [laravel-production]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # phpMyAdmin: Herramienta para la gestión de la base de datos de la aplicación.
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: unless-stopped
+    environment:
+      PMA_HOST: ${DB_HOST:-mariadb}
+      PMA_PORT: ${DB_PORT:-3306}
+      PMA_USER: ${PHP_MY_ADMIN_USER:-root}
+      PMA_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:${PHP_MY_ADMIN_PORT:-8080}:80"
+    depends_on:
+      mariadb:
+        condition: service_healthy
+    networks: [laravel-production]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://127.0.0.1:80 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # prometheus: monitorea la app y scrapea /metrics, obteniendo métricas de la aplicación
+  prometheus:
+    image: prom/prometheus:latest
+    user: "0:0"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9090:9090"
+    environment:
+      TZ: ${APP_TIMEZONE:-America/Argentina/Buenos_Aires}
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=90d"
+      - "--web.enable-lifecycle"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    secrets:
+      - prometheus_bearer_token
+    depends_on:
+      frankenphp:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - laravel-production
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:9090/-/healthy >/dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+
+  # grafana: Dashboards de métricas provistas por prometheus.
+  grafana:
+    image: grafana/grafana-oss:latest
+    user: "0:0"
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9091:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:?Set GRAFANA_PASSWORD in .env}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SERVER_HTTP_PORT: "3000"
+      TZ: ${APP_TIMEZONE:-America/Argentina/Buenos_Aires}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./docker/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./docker/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
+    networks:
+      - laravel-production
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://127.0.0.1:3000/api/health | grep -q '\"database\":\"ok\"' || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 10
+
+networks:
+  laravel-production:
+    driver: bridge
+
+volumes:
+  mariadb-data-production:
+  storage-production:
+  caddy-data:
+  caddy-config:
+  prometheus-data:
+  grafana-data:
+
+secrets:
+  prometheus_bearer_token:
+    environment: PROMETHEUS_BEARER_TOKEN

@@ -1,0 +1,205 @@
+{
+  "uid": "laravel-observability",
+  "title": "Laravel",
+  "tags": ["examenes", "prometheus", "laravel"],
+  "schemaVersion": 38,
+  "version": 1,
+  "refresh": "15s",
+  "time": { "from": "now-6h", "to": "now" },
+  "templating": {
+    "list": [
+      { "name": "examen_id",  "type": "query", "label": "Examen",  "datasource": "Prometheus", "query": "label_values(app_items_por_examen, examen_id)",  "includeAll": true, "allValue": ".*", "multi": true, "refresh": 2 },
+      { "name": "caso_id",    "type": "query", "label": "Caso",    "datasource": "Prometheus", "query": "label_values(app_items_por_caso, caso_id)",    "includeAll": true, "allValue": ".*", "multi": true, "refresh": 2 },
+      { "name": "seccion_id", "type": "query", "label": "Sección", "datasource": "Prometheus", "query": "label_values(app_items_por_seccion, seccion_id)", "includeAll": true, "allValue": ".*", "multi": true, "refresh": 2 },
+      { "name": "event",      "type": "query", "label": "Evento",  "datasource": "Prometheus", "query": "label_values(app_activity_events_total, event)", "includeAll": true, "allValue": ".*", "multi": true, "refresh": 2 }
+    ]
+  },
+  "panels": [
+    { "type": "row", "title": "Estado general", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 0 } },
+
+    {
+      "type": "stat", "title": "Usuarios activos (última hora)",
+      "targets": [{ "expr": "app_usuarios_activos_ultima_hora", "instant": true, "datasource": "Prometheus" }],
+      "gridPos": {"h": 5, "w": 4, "x": 0, "y": 1}
+    },
+    {
+      "type": "stat", "title": "Salud global",
+      "targets": [{ "expr": "app_health_is_ok", "instant": true, "datasource": "Prometheus" }],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "1": { "text": "OK", "color": "green" }, "0": { "text": "Issue", "color": "red" } } }
+          ]
+        }
+      },
+      "gridPos": {"h": 5, "w": 4, "x": 4, "y": 1}
+    },
+    {
+      "type": "bargauge", "title": "Salud por check",
+      "targets": [{ "expr": "app_health_check_status", "instant": true, "datasource": "Prometheus" }],
+      "options": { "displayMode": "gradient", "reduceOptions": { "calcs": ["lastNotNull"] } },
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "OK", "color": "green" }, "1": { "text": "Warning", "color": "orange" }, "2": { "text": "Fail", "color": "red" } } }
+          ],
+          "thresholds": { "mode": "absolute", "steps": [ { "color": "green" }, { "color": "orange", "value": 1 }, { "color": "red", "value": 2 } ] }
+        },
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Value" }, "properties": [ { "id": "displayName", "value": "${__field.labels.check}" } ] }
+        ]
+      },
+      "gridPos": {"h": 5, "w": 16, "x": 8, "y": 1}
+    },
+
+    { "type": "row", "title": "Resumen del dominio", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 6 } },
+
+    {
+      "type": "bargauge", "title": "Totales por modelo",
+      "targets": [{ "expr": "app_model_count", "instant": true, "datasource": "Prometheus" }],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          { "matcher": { "id": "byName", "options": "Value" }, "properties": [ { "id": "displayName", "value": "${__field.labels.model}" } ] }
+        ]
+      },
+      "gridPos": {"h": 6, "w": 12, "x": 0, "y": 7}
+    },
+
+    { "type": "stat", "title": "Exámenes",  "targets": [{ "expr": "app_model_count{model=\"examen\"}",      "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 12, "y": 7} },
+    { "type": "stat", "title": "Casos",     "targets": [{ "expr": "app_model_count{model=\"caso\"}",        "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 15, "y": 7} },
+    { "type": "stat", "title": "Preguntas", "targets": [{ "expr": "app_model_count{model=\"pregunta\"}",    "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 18, "y": 7} },
+    { "type": "stat", "title": "Ítems",     "targets": [{ "expr": "app_model_count{model=\"item\"}",        "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 21, "y": 7} },
+
+    { "type": "stat", "title": "Secciones",       "targets": [{ "expr": "app_model_count{model=\"seccion\"}",      "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 12, "y": 10} },
+    { "type": "stat", "title": "Tablas de cotejo","targets": [{ "expr": "app_model_count{model=\"tabla_cotejo\"}", "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 15, "y": 10} },
+    { "type": "stat", "title": "Usuarios",        "targets": [{ "expr": "app_model_count{model=\"usuario\"}",     "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 18, "y": 10} },
+    { "type": "stat", "title": "Pseudónimos",     "targets": [{ "expr": "app_model_count{model=\"pseudonimo\"}",  "instant": true, "datasource": "Prometheus" }], "gridPos": {"h": 3, "w": 3, "x": 21, "y": 10} },
+
+    { "type": "row", "title": "Exámenes", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 13 } },
+
+    {
+      "type": "timeseries", "title": "Ítems por examen",
+      "targets": [{ "expr": "sum by (examen_id) (app_items_por_examen{examen_id=~\"$examen_id\"})", "legendFormat": "Examen {{examen_id}}", "datasource": "Prometheus" }],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 14}
+    },
+    {
+      "type": "timeseries", "title": "Preguntas por examen",
+      "targets": [{ "expr": "sum by (examen_id) (app_preguntas_por_examen{examen_id=~\"$examen_id\"})", "legendFormat": "Examen {{examen_id}}", "datasource": "Prometheus" }],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 14}
+    },
+
+    {
+      "type": "table", "title": "Casos por examen (snapshot)",
+      "targets": [{ "expr": "app_casos_por_examen{examen_id=~\"$examen_id\"}", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 7, "w": 8, "x": 0, "y": 22}
+    },
+    {
+      "type": "table", "title": "Secciones por examen (snapshot)",
+      "targets": [{ "expr": "app_secciones_por_examen{examen_id=~\"$examen_id\"}", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 7, "w": 8, "x": 8, "y": 22}
+    },
+    {
+      "type": "table", "title": "Tablas de cotejo por examen (snapshot)",
+      "targets": [{ "expr": "app_tablas_cotejo_por_examen{examen_id=~\"$examen_id\"}", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 7, "w": 8, "x": 16, "y": 22}
+    },
+
+    { "type": "row", "title": "Casos & Preguntas", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 29 } },
+
+    {
+      "type": "timeseries", "title": "Preguntas por caso (Top 10)",
+      "targets": [{ "expr": "topk(10, app_preguntas_por_caso{caso_id=~\"$caso_id\"})", "legendFormat": "Caso {{caso_id}}", "datasource": "Prometheus" }],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 30}
+    },
+    {
+      "type": "table", "title": "Ítems por pregunta (Top 20, snapshot)",
+      "targets": [{ "expr": "topk(20, app_items_por_pregunta)", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 30}
+    },
+
+    { "type": "row", "title": "Secciones", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 38 } },
+
+    {
+      "type": "table", "title": "Ítems por sección (snapshot)",
+      "targets": [{ "expr": "app_items_por_seccion{seccion_id=~\"$seccion_id\"}", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 39}
+    },
+    {
+      "type": "table", "title": "Ítems por sección y caso (snapshot)",
+      "targets": [{ "expr": "sum by (seccion_id, caso_id) (app_items_por_seccion_y_caso{seccion_id=~\"$seccion_id\", caso_id=~\"$caso_id\"})", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 39}
+    },
+
+    { "type": "row", "title": "Usuarios", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 47 } },
+
+    {
+      "type": "table", "title": "Usuarios por examen (snapshot)",
+      "targets": [{ "expr": "app_usuarios_por_examen{examen_id=~\"$examen_id\"}", "instant": true, "datasource": "Prometheus" }],
+      "transformations": [{ "id": "labelsToFields", "options": { "mode": "columns" } }],
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 48}
+    },
+
+    { "type": "row", "title": "Activity", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 56 } },
+
+    {
+      "type": "barchart", "title": "Top eventos (snapshot)",
+      "targets": [{ "expr": "topk(10, app_activity_events_total{event=~\"$event\"})", "instant": true, "datasource": "Prometheus", "legendFormat": "{{event}}" }],
+      "fieldConfig": { "overrides": [ { "matcher": { "id": "byName", "options": "Value" }, "properties": [ { "id": "displayName", "value": "${__field.labels.event}" } ] } ] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 57 }
+    },
+
+    { "type": "row", "title": "Horizon", "collapsed": false, "gridPos": { "h": 1, "w": 24, "x": 0, "y": 65 } },
+
+    {
+      "type": "stat", "title": "Horizon — estado",
+      "targets": [{ "expr": "app_horizon_status", "instant": true, "datasource": "Prometheus" }],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "1": { "text": "Running", "color": "green" }, "0": { "text": "Paused", "color": "orange" }, "-1": { "text": "Inactive", "color": "red" } } }
+          ]
+        }
+      },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 66 }
+    },
+    {
+      "type": "bargauge", "title": "Workload por cola (snapshot)",
+      "targets": [{ "expr": "app_horizon_current_workload", "instant": true, "datasource": "Prometheus" }],
+      "fieldConfig": { "overrides": [ { "matcher": { "id": "byName", "options": "Value" }, "properties": [ { "id": "displayName", "value": "${__field.labels.queue}" } ] } ] },
+      "gridPos": { "h": 4, "w": 8, "x": 4, "y": 66 }
+    },
+    {
+      "type": "bargauge", "title": "Procesos por cola (snapshot)",
+      "targets": [{ "expr": "app_horizon_current_processes", "instant": true, "datasource": "Prometheus" }],
+      "fieldConfig": { "overrides": [ { "matcher": { "id": "byName", "options": "Value" }, "properties": [ { "id": "displayName", "value": "${__field.labels.queue}" } ] } ] },
+      "gridPos": { "h": 4, "w": 8, "x": 12, "y": 66 }
+    },
+    {
+      "type": "timeseries", "title": "Jobs por minuto",
+      "targets": [{ "expr": "app_horizon_jobs_per_minute", "datasource": "Prometheus" }],
+      "gridPos": { "h": 6, "w": 12, "x": 0, "y": 70 }
+    },
+    {
+      "type": "stat", "title": "Failed jobs (última hora)",
+      "targets": [{ "expr": "app_horizon_failed_jobs_per_hour", "instant": true, "datasource": "Prometheus" }],
+      "gridPos": { "h": 6, "w": 4, "x": 12, "y": 70 }
+    },
+    {
+      "type": "stat", "title": "Recent jobs",
+      "targets": [{ "expr": "app_horizon_recent_jobs", "instant": true, "datasource": "Prometheus" }],
+      "gridPos": { "h": 6, "w": 4, "x": 16, "y": 70 }
+    },
+    {
+      "type": "stat", "title": "Master supervisors",
+      "targets": [{ "expr": "app_horizon_master_supervisors", "instant": true, "datasource": "Prometheus" }],
+      "gridPos": { "h": 6, "w": 4, "x": 20, "y": 70 }
+    }
+  ]
+}
