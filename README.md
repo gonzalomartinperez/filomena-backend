@@ -62,6 +62,8 @@ flowchart LR
 
 The API is the system boundary between the [Filomena frontend](https://github.com/gonzalomartinperez/filomena-frontend) and the exam domain. Docker Compose assembles the application runtime, MariaDB, Redis, queue workers and the observability stack for development and deployment.
 
+Database history: the project used both MySQL and MariaDB during its development; MariaDB was the final relational database selection. The diagrams show that final choice. [MySQL Community Edition](https://www.mysql.com/products/community/) is open source under the GPL, and [MariaDB Server](https://mariadb.org/about/) is open source under GPLv2.
+
 ## API and domain capabilities
 
 | Area | What the backend handles |
@@ -115,7 +117,7 @@ The API is the system boundary between the [Filomena frontend](https://github.co
 |---|---|
 | Runtime and API | PHP 8.2+, Laravel 12, FrankenPHP, Laravel Octane, REST |
 | Identity and authorization | Laravel Sanctum, Laravel Fortify, Spatie Permission |
-| Persistence | MariaDB / MySQL, Eloquent, Redis, model caching |
+| Persistence | MariaDB (final selection), MySQL (earlier project use), Eloquent, Redis, model caching |
 | Async processing | Laravel Queue, Redis, Laravel Horizon |
 | Files and reporting | Spatie Media Library, PDF generation, Laravel Excel |
 | Observability | Prometheus, Grafana, Laravel Pulse, Telescope, Spatie Health, activity logs |
