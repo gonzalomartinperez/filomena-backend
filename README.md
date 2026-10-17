@@ -24,10 +24,12 @@ Historical public snapshot, maintained by Gonzalo Martin Perez as technical port
 
 ## Architecture
 
+<p align="center">
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.svg">
   <img src="docs/diagrams/architecture-light.svg" alt="Filomena backend historical architecture: the Next.js client reaches Laravel through Caddy and FrankenPHP; server-side permissions protect exam workflows, data and operational visibility" width="1200">
 </picture>
+</p>
 
 The overview groups responsibilities in the published implementation. The editable logical view below retains the detailed relationships; neither view changes the historical architecture. [Diagram source and maintenance](docs/diagrams/README.md).
 
