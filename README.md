@@ -24,6 +24,16 @@ Historical public snapshot, maintained by Gonzalo Martin Perez as technical port
 
 ## Architecture
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/diagrams/architecture-dark.svg">
+  <img src="docs/diagrams/architecture-light.svg" alt="Filomena backend historical architecture: the Next.js client reaches Laravel through Caddy and FrankenPHP; server-side permissions protect exam workflows, data and operational visibility" width="1200">
+</picture>
+
+The overview groups responsibilities in the published implementation. The editable logical view below retains the detailed relationships; neither view changes the historical architecture. [Diagram source and maintenance](docs/diagrams/README.md).
+
+<details>
+<summary>Detailed logical view · editable Mermaid</summary>
+
 ```mermaid
 flowchart LR
     Client[Next.js / TypeScript client] -->|REST + JSON| Runtime[Caddy + FrankenPHP / Octane]
@@ -47,6 +57,8 @@ flowchart LR
     Prometheus --> Grafana[Grafana]
     API --> Health[Health checks / Pulse / Telescope]
 ```
+
+</details>
 
 The API is the system boundary between the [Filomena frontend](https://github.com/gonzalomartinperez/filomena-frontend) and the exam domain. Docker Compose assembles the application runtime, MariaDB, Redis, queue workers and the observability stack for development and deployment.
 

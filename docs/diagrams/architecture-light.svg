@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="890" viewBox="0 0 1200 890" role="img" aria-labelledby="title desc">
+<title id="title">Filomena backend: historical architecture overview</title><desc id="desc">Historical Filomena backend: Next.js client sends REST JSON through Caddy and FrankenPHP with Octane to Laravel. Sanctum, Fortify and role permissions guard exam and grading workflows. MariaDB, Redis, Horizon and file storage support persistence and asynchronous work. Protected metrics feed Prometheus and Grafana; Health, Pulse and Telescope support diagnosis.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#60738C" stroke-width="1.5"/></marker></defs>
+<rect width="1200" height="890" rx="24" fill="#F7F9FC"/>
+<style>text{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#132238}.eyebrow{font-size:13px;font-weight:700;letter-spacing:1.4px;fill:#006C66}.title{font-size:32px;font-weight:750;letter-spacing:-.6px}.body{font-size:16px;fill:#40526B}.label{font-size:19px;font-weight:700}.small{font-size:14px;fill:#40526B}.section{font-size:13px;font-weight:700;letter-spacing:1px;fill:#40526B}.edge{fill:none;stroke:#60738C;stroke-width:2;marker-end:url(#arrow)}</style>
+<text x="40" y="40" class="eyebrow">FILOMENA / BACKEND</text>
+<text x="40" y="88" class="title">One API. Authoritative exam state.</text>
+<text x="40" y="122" class="small">Historical implementation · Public portfolio snapshot · Not a current deployment assessment</text>
+<text x="40" y="186" class="section">01 / CLIENT + RUNTIME</text>
+<text x="430" y="186" class="section">02 / APPLICATION AUTHORITY</text>
+<text x="820" y="186" class="section">03 / DATA + ASYNC WORK</text>
+<rect x="40" y="210" width="310" height="116" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="40" y="228" width="4" height="80" rx="2" fill="#006C66"/>
+<text x="62" y="244" class="label">Next.js client</text>
+<text x="62" y="272" class="body">TypeScript web experience</text>
+<text x="62" y="296" class="body">REST + JSON requests</text>
+<rect x="40" y="410" width="310" height="140" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="40" y="428" width="4" height="104" rx="2" fill="#006C66"/>
+<text x="62" y="444" class="label">Caddy + FrankenPHP</text>
+<text x="62" y="472" class="body">Laravel Octane runtime</text>
+<text x="62" y="496" class="body">Application entry point</text>
+<rect x="430" y="210" width="310" height="340" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="430" y="228" width="4" height="304" rx="2" fill="#006C66"/>
+<text x="452" y="244" class="label">Laravel 12 API</text>
+<text x="452" y="272" class="body">Sanctum + Fortify</text>
+<text x="452" y="296" class="body">Multi-role permissions</text>
+<text x="452" y="320" class="body">Exam and grading domain</text>
+<text x="452" y="344" class="body">PDF / XLSX reporting</text>
+<text x="452" y="368" class="body">Sanitized activity log</text>
+<text x="452" y="392" class="body">Server-owned exam state</text>
+<rect x="820" y="210" width="340" height="92" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="820" y="228" width="4" height="56" rx="2" fill="#006C66"/>
+<text x="842" y="244" class="label">MariaDB</text>
+<text x="842" y="272" class="body">Relational exam data</text>
+<rect x="820" y="326" width="340" height="116" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="820" y="344" width="4" height="80" rx="2" fill="#006C66"/>
+<text x="842" y="360" class="label">Redis + Horizon</text>
+<text x="842" y="388" class="body">Cache, sessions and queues</text>
+<text x="842" y="412" class="body">Asynchronous workers</text>
+<rect x="820" y="466" width="340" height="92" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="820" y="484" width="4" height="56" rx="2" fill="#006C66"/>
+<text x="842" y="500" class="label">Media / report storage</text>
+<text x="842" y="528" class="body">Generated files and reports</text>
+<path d="M195 326 V410" class="edge"/>
+<path d="M350 480 H430" class="edge"/>
+<path d="M740 256 H820" class="edge"/>
+<path d="M740 384 H820" class="edge"/>
+<path d="M740 512 H820" class="edge"/>
+<rect x="412" y="194" width="346" height="374" rx="22" fill="none" stroke="#6544B0" stroke-width="2" stroke-dasharray="7 6"/>
+<text x="40" y="600" class="small">Dashed boundary: API enforcement</text>
+<path d="M585 550 V665" class="edge"/>
+<rect x="40" y="665" width="700" height="142" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="40" y="683" width="4" height="106" rx="2" fill="#6544B0"/>
+<text x="62" y="699" class="label">Protected metrics → Prometheus → Grafana</text>
+<text x="62" y="727" class="body">Application, exam and worker visibility</text>
+<text x="62" y="751" class="body">Bearer-protected metrics endpoint</text>
+<rect x="780" y="665" width="380" height="142" rx="16" fill="#FFFFFF" stroke="#60738C" stroke-width="1"/><rect x="780" y="683" width="4" height="106" rx="2" fill="#6544B0"/>
+<text x="802" y="699" class="label">Operational diagnosis</text>
+<text x="802" y="727" class="body">Health checks / Pulse</text>
+<text x="802" y="751" class="body">Telescope and sanitized logs</text>
+<text x="40" y="850" class="small">Reading guide: solid arrows = request / data flow; telemetry and diagnostics are separate operational views.</text>
+</svg>
