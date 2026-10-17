@@ -2,6 +2,8 @@
 
 **Production REST API for a health-sciences assessment platform adopted by five Argentine national institutions.** Filomena modernized a CakePHP + jQuery monolith into a decoupled Laravel and Next.js system built for concurrent exams, traceable grading and repeatable institutional deployments.
 
+Historical public snapshot, maintained by Gonzalo Martin Perez as technical portfolio evidence. Versions and delivery configuration describe the published implementation.
+
 [![PHP 8.2+](https://img.shields.io/badge/PHP-8.2%2B-111111?style=flat-square&logo=php&logoColor=white)](https://www.php.net/)
 [![Laravel 12](https://img.shields.io/badge/Laravel-12-111111?style=flat-square&logo=laravel&logoColor=white)](https://laravel.com/)
 [![REST API](https://img.shields.io/badge/API-REST-111111?style=flat-square)](#api-and-domain-capabilities)
@@ -118,7 +120,7 @@ The platform exists in an institutional context and this repository does not cla
 
 ### Docker Compose (recommended)
 
-Requirements: Docker Engine and Docker Compose v2. On Windows, use Docker Desktop with WSL 2 integration.
+Requirements: Docker Engine and Docker Compose v2. On Windows, use Docker Desktop with WSL 2 integration. Use a dedicated local checkout, a distinct `COMPOSE_PROJECT_NAME` and available ports. The API port is not restricted to loopback in the Compose files; review host exposure before starting. Do not point the example stack at institutional services or data.
 
 ```bash
 cp .env.example.docker .env
@@ -154,8 +156,10 @@ Operational commands:
 ./run.sh dev --build   # rebuild and start development
 ./run.sh prod --build  # rebuild and start the production profile
 ./run.sh off           # stop both profiles and preserve volumes
-./run.sh reset         # stop both profiles and remove only project volumes
+./run.sh reset         # destructive: remove project volumes and orphan containers
 ```
+
+The script stops both named modes before starting the selected one; it is not a zero-downtime deployment command. `reset` can delete the production-profile database, application storage and monitoring volumes. Use it only with disposable local data. The development database has no declared persistent data volume. Historical images include mutable tags; the `prod` profile is a reference configuration, not a current security or deployment-readiness certification.
 
 ### Native toolchain
 
@@ -190,6 +194,10 @@ The same required administrator and development credentials must be configured b
 - [Filomena frontend](https://github.com/gonzalomartinperez/filomena-frontend)
 - [English case study](https://vine-jupiter-8df.notion.site/Filomena-Production-Health-Sciences-Exam-Platform-367b68807486814ca99ad189ca70ff00)
 - [Caso de estudio en español](https://vine-jupiter-8df.notion.site/Filomena-Plataforma-Productiva-de-Ex-menes-de-Ciencias-de-la-Salud-29ab68807486806db025cfeef5de9f73)
+
+## Maintenance and security
+
+This is an owner-maintained portfolio reference, not a community support service. See [CONTRIBUTING.md](CONTRIBUTING.md) for scope and validation, and [SECURITY.md](SECURITY.md) for private reporting and safe handling of institutional data. Dependency changes require manual review; an open update PR is not evidence that the snapshot has been upgraded or verified.
 
 ---
 
