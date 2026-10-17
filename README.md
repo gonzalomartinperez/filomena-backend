@@ -211,7 +211,7 @@ The same required administrator and development credentials must be configured b
 
 ## Maintenance and security
 
-This is an owner-maintained portfolio reference, not a community support service. See [CONTRIBUTING.md](CONTRIBUTING.md) for scope and validation, and [SECURITY.md](SECURITY.md) for private reporting and safe handling of institutional data. Dependency changes require manual review; an open update PR is not evidence that the snapshot has been upgraded or verified.
+This is an owner-maintained portfolio reference, not a community support service. See [CONTRIBUTING.md](CONTRIBUTING.md) for scope and validation, and [SECURITY.md](SECURITY.md) for private reporting and safe handling of institutional data. The application source and dependencies are preserved as a historical university-project snapshot, with no automatic dependency maintenance or routine upgrade program. `develop` is retained for documentation corrections through reviewed PRs into `main`; the two branches are kept synchronized after promotion. Historical dependencies may have known security advisories; the snapshot is not a current deployment recommendation.
 
 ---
 
