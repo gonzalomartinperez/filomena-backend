@@ -8,6 +8,12 @@ Documentation corrections and reproducible bug reports are welcome as suggestion
 
 Before proposing a correction, read the [README](README.md) and [security policy](SECURITY.md). Describe the concrete problem, affected revision, expected behavior and smallest reproduction using synthetic records. Do not attach real student information, exam responses, import workbooks, credentials, logs with tokens or environment files. Report security issues privately.
 
+## Snapshot and branch policy
+
+Application source and dependency versions are retained as historical university-project evidence. Automatic dependency updates and routine modernization are outside this snapshot's maintenance scope. Security advisories remain relevant; preserving the snapshot does not imply that its dependencies are currently secure or suitable for a new deployment.
+
+Keep `main` and `develop` as the permanent branches. Use a documentation task branch and PR into `develop`, then a reviewed documentation promotion into `main`; synchronize the branches afterward. This flow is for documentation corrections and does not authorize application or dependency changes.
+
 ## Working safely
 
 Use a separate branch and a local environment you are authorized to use. Start from the documented example environment files, keep credentials outside Git, and review Docker port bindings before starting a stack. Do not run reset commands against data that must be retained.
@@ -30,6 +36,6 @@ Run checks appropriate to the files changed and report actual results and limita
 
 ## Change descriptions
 
-Use a clear English title and explain the concrete correction, why it matters, verification performed and relevant limits. Keep documentation changes separate from functional changes. Dependency updates require manual maintainer review of the complete change and applicable checks; neither a bot author nor passing checks automatically authorizes a merge. Existing update PRs may target the default branch in this historical repository.
+Use a clear English title and explain the concrete correction, why it matters, verification performed and relevant limits. Keep documentation changes separate from functional changes. Do not propose routine dependency-update PRs as part of documentation maintenance. A bot author or passing checks does not authorize changes to the preserved implementation.
 
 No repository automation or deployment authority is granted by this guide.
