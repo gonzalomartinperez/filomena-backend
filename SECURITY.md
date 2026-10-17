@@ -10,4 +10,4 @@ This repository is a portfolio/reference snapshot. It does not contain productio
 - Do not expose database, phpMyAdmin, Prometheus or Grafana ports publicly without an authenticated reverse proxy and network controls.
 - Use synthetic data only in local development.
 
-If you find a security issue, do not publish exploit details or sensitive data in a public issue. Use GitHub's private vulnerability reporting channel when it is available for this repository.
+If you find a security issue, do not publish exploit details or sensitive data in a public issue. Use GitHub's private vulnerability reporting channel if it is enabled. If it is unavailable, use the contact details published on the [maintainer's GitHub profile](https://github.com/gonzalomartinperez) to arrange a private channel; keep the initial message free of sensitive details. No response-time commitment or supported-version security maintenance schedule is published for this historical snapshot.
