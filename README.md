@@ -62,7 +62,7 @@ flowchart LR
 
 The API is the system boundary between the [Filomena frontend](https://github.com/gonzalomartinperez/filomena-frontend) and the exam domain. Docker Compose assembles the application runtime, MariaDB, Redis, queue workers and the observability stack for development and deployment.
 
-Database history: the project used both MySQL and MariaDB during its development; MariaDB was the final relational database selection. The diagrams show that final choice. [MySQL Community Edition](https://www.mysql.com/products/community/) is open source under the GPL, and [MariaDB Server](https://mariadb.org/about/) is open source under GPLv2.
+Database history: the project used both MySQL and MariaDB during its development; MariaDB was the final relational database selection. The team chose MariaDB Server as a community, open-source foundation that met Filomena's requirements without depending on commercial features. The diagrams show that final choice. [MySQL Community Edition](https://www.mysql.com/products/community/) is open source under the GPL, and [MariaDB Server](https://mariadb.org/about/) is open source under GPLv2.
 
 ## API and domain capabilities
 
